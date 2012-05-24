@@ -1,39 +1,43 @@
 safeRequire = require("../utils").safeRequire
+DataClient = require("client").DataClient
 
 exports.initialize = initializeSchema = (schema, callback) ->
-  s = schema.settings
-  if schema.settings.url
-    url = require("url").parse(schema.settings.url)
-    s.host = url.hostname
-    s.port = url.port
-    s.database = url.pathname.replace(/^\//, "")
-    s.username = url.auth and url.auth.split(":")[0]
-    s.password = url.auth and url.auth.split(":")[1]
-  s.host = s.host or "localhost"
-  s.port = parseInt(s.port or "27017", 10)
-  s.database = s.database or "test"
-  schema
+    s = schema.settings
+    if schema.settings.url
+        url = require("url").parse(schema.settings.url)
+        s.host = url.hostname
+        s.port = url.port
+        s.database = url.pathname.replace(/^\//, "")
+        s.username = url.auth and url.auth.split(":")[0]
+        s.password = url.auth and url.auth.split(":")[1]
+    s.host = s.host or "localhost"
+    s.port = parseInt(s.port or "30000", 10)
+    s.database = s.database or "cozy"
+    schema
   
 DataSystem = (s, schema, callback) ->
-  @_models = {}
-  # Set up client
+    @_models = {}
+    @client = DataClient s.host
 
+
+DataSystem::exists = (model, id, callback) ->
+    data =
+        dataType: model
+        id: id
+
+    @client.post "get/", data, (err, resp) ->
+        callback err, not err and resp
 
 DataSystem::create = (model, data, callback) ->
-  @collection(model).insert data, {}, (err, m) ->
-    callback err, (if err then null else m[0]._id.toString())
+    data.dataType = model
+    @client.post "create/", data, (err, resp) ->
+        callback err, (if err then null else resp._id.toString())
 
 DataSystem::save = (model, data, callback) ->
   @collection(model).save
     _id: new ObjectID(data.id)
   , data, (err) ->
     callback err
-
-DataSystem::exists = (model, id, callback) ->
-  @collection(model).findOne
-    _id: new ObjectID(id)
-  , (err, data) ->
-    callback err, not err and data
 
 DataSystem::find = find = (model, id, callback) ->
   @collection(model).findOne
