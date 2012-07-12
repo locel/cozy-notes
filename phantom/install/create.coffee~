@@ -1,0 +1,16 @@
+casper = require('casper').create()
+
+casper.start "http://localhost:3000/#note/all", ->
+        @test.assertExists "li#tree-node-all-todo", 'found todo'
+        @click "#tree-node-all-todo a"
+
+casper.then ->
+        @test.assertExists "#tree-create", 'found create'
+        @click "#tree-create"
+
+casper.then ->
+        @test.assertExists ".jstree-rename-input", 'found rename input'
+        @fill ".jstree-rename-input", "Cozy"
+
+casper.run ->
+        @echo("done").exit();

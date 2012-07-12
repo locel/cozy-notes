@@ -17,12 +17,16 @@ walk = (dir, fileList) ->
 {exec} = require 'child_process'
 testFiles = walk("test", [])
 uiTestFiles = walk("client/test", [])
+phantomTestFiles = walk("phantom/test", [])
 
 task 'tests', 'run tests through mocha', ->
     runTests testFiles
     
 task 'tests:client', 'run tests through mocha', ->
     runTests uiTestFiles
+
+task 'tests:phantom', 'run tests through mocha', ->
+    runTests phantomTestFiles
 
 runTests = (fileList) ->
   console.log "Run tests with Mocha for " + fileList.join(" ")
