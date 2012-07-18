@@ -1,0 +1,127 @@
+###*
+@class note
+###
+async = require("async")
+helpers = require('../../client/app/helpers')
+
+###*
+DestroyNote corresponding to given condition
+TODO optimise deletion : each deletion requires on request.
+@method destroySome
+@param {Object} condition
+@param {Function} callback
+###
+Note.destroySome = (condition, callback) ->
+
+    # Replace this with async lib call.
+    wait = 0
+    error = null
+    done = (err) ->
+        error = error || err
+        if --wait == 0
+            callback(error)
+
+    Note.all condition, (err, data) ->
+        if err then return callback(err)
+        if data.length == 0 then return callback(null)
+
+        wait = data.length
+        data.forEach (obj) ->
+            obj.destroy done
+###*
+Delete all notes
+@method destroyAll
+@param {Function} callback
+###
+Note.destroyAll = (callback) ->
+    Note.destroySome {}, callback
+
+###*
+Return notes which live under given path.
+@method allForPath
+@param {Object} path
+@param {Function} callback
+###
+Note.allForPath = (path, callback) ->
+    regExp = helpers.getPathRegExp path
+    Note.all { where: { path: { regex: regExp } } }, callback
+
+###*
+Destroy notes which live under given path.
+@method destroyFarPath
+@param {Object} path
+@param {Function} callback
+###
+Note.destroyForPath = (path, callback) ->
+    regExp = helpers.getPathRegExp path
+    Note.destroySome { where: { path: { regex: regExp } } }, callback
+
+###*
+Change path for every note which are children of given path to the 
+new given one.
+It is the result of moving notes inside tree.
+@method updatePath
+@param {Object} path
+@param {Object} newPath
+@param {String} newName
+@param {Function} callback
+###
+Note.updatePath = (path, newPath, newName, callback) ->
+    Note.allForPath path, (err, notes) ->
+        return callback(err) if err
+        return callback(new Error("No note for this path")) \
+            if notes.length == 0
+
+        wait = notes.length
+        done = (err) ->
+            error = error || err
+            if --wait == 0
+                callback(error)
+
+        nodeIndex = path.split("/").length - 2
+
+        for note in notes
+            note.path = newPath + note.path.substring(path.length)
+            humanNames = note.humanPath.split(",")
+            humanNames[nodeIndex] = newName
+            note.humanPath = humanNames
+            note.save done
+
+###*
+When a node is moved, all notes that are linked to this node are
+updated : sub-path are replaced by new node path.
+@method movePath
+@param {Object} path
+@param {String} dest
+@param {String} humanDest
+@param {Function} callback
+###
+Note.movePath = (path, dest, humanDest, callback) ->
+    Note.allForPath path, (err, notes) ->
+        return callback(err) if err
+        return callback(new Error("No note for this path")) \
+            if notes.length == 0
+
+        wait = notes.length
+        done = (err) ->
+            error = error || err
+            if --wait == 0
+                callback(error)
+
+        parentPath = path.split("/")
+        parentPath.pop()
+        pathLength = parentPath.join("/").length
+        nodeIndex = parentPath.length - 1
+
+        for note in notes
+            # Replace old path by new path
+            note.path = dest + note.path.substring(pathLength)
+            
+            # Replace human path by new human path
+            humanNames = note.humanPath.split(",")
+            humanNames.shift() for i in [0..nodeIndex-1]
+            humanNames = humanDest.concat humanNames
+            note.humanPath = humanNames
+
+            note.save done
+

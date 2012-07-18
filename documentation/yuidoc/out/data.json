@@ -1,0 +1,165 @@
+{
+    "project": {},
+    "files": {
+        "source/note.js": {
+            "name": "source/note.js",
+            "modules": {},
+            "classes": {
+                "note": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "note": {
+            "name": "note",
+            "shortname": "note",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "source/note.js",
+            "line": 3
+        }
+    },
+    "classitems": [
+        {
+            "file": "source/note.js",
+            "line": 15,
+            "description": "DestroyNote corresponding to given condition\nTODO optimise deletion : each deletion requires on request.",
+            "itemtype": "method",
+            "name": "destroySome",
+            "params": [
+                {
+                    "name": "condition",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "note"
+        },
+        {
+            "file": "source/note.js",
+            "line": 48,
+            "description": "Delete all notes",
+            "itemtype": "method",
+            "name": "destroyAll",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "note"
+        },
+        {
+            "file": "source/note.js",
+            "line": 59,
+            "description": "Return notes which live under given path.",
+            "itemtype": "method",
+            "name": "allForPath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "note"
+        },
+        {
+            "file": "source/note.js",
+            "line": 79,
+            "description": "Destroy notes which live under given path.",
+            "itemtype": "method",
+            "name": "destroyFarPath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "note"
+        },
+        {
+            "file": "source/note.js",
+            "line": 99,
+            "description": "Change path for every note which are children of given path to the \nnew given one.\nIt is the result of moving notes inside tree.",
+            "itemtype": "method",
+            "name": "updatePath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "newPath",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "newName",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "note"
+        },
+        {
+            "file": "source/note.js",
+            "line": 142,
+            "description": "When a node is moved, all notes that are linked to this node are\nupdated : sub-path are replaced by new node path.",
+            "itemtype": "method",
+            "name": "movePath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "dest",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "humanDest",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "note"
+        }
+    ]
+}

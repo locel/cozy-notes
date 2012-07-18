@@ -1,0 +1,29 @@
+jsduck vs yuidoc
+
+point commun : 
+
+- utilise les javascripts, on doit compiler les fichiers .coffee en .js
+- forme d'utilisation : 
+	###*
+	###
+- utilisation simple
+- disposent d'une bonne documentation en ligne
+
+jsduck
+	+ gestion à plusieurs onglets 
+	+ interface très user friendly
+	+ inclusion image / video
+	+ grosse automatisation
+	+ commentaires ?
+	+ bon système de recherche
+	- installation de ruby
+	- place réservée à la documentation limitée
+	- peu personnalisation graphique
+
+yuidoc
+	+ grosse personnalisation
+	+ interface épurée
+	+ package node
+	+ bonne interface sans souris ( les geeks apprécierons )
+	- pas de système d'onglet
+	- peu automatisé
