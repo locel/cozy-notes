@@ -1,3 +1,8 @@
+###*
+@class application_controller
+controls the application
+###
+
 if app.settings.env == "production"
     before 'check authenticated', ->
         if req.isAuthenticated() then next() else send 403

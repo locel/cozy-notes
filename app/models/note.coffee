@@ -1,8 +1,17 @@
+###*
+@class note
+model de gestion de note
+###
+
 async = require("async")
 helpers = require('../../client/app/helpers')
 
-# DestroyNote corresponding to given condition
-# TODO optimise deletion : each deletion requires on request.
+###*
+@param
+@param
+DestroyNote corresponding to given condition
+TODO optimise deletion : each deletion requires on request.
+###
 Note.destroySome = (condition, callback) ->
 
     # Replace this with async lib call.
@@ -20,24 +29,42 @@ Note.destroySome = (condition, callback) ->
         wait = data.length
         data.forEach (obj) ->
             obj.destroy done
+###*
+@param {function}
+Delete all notes.
+###
 
-# Delete all notes.
 Note.destroyAll = (callback) ->
     Note.destroySome {}, callback
 
-# Return notes which live under given path.
+###*
+@param {String}
+@param {function}
+Return notes which live under given path.
+###
+
 Note.allForPath = (path, callback) ->
     regExp = helpers.getPathRegExp path
     Note.all { where: { path: { regex: regExp } } }, callback
+###*
+@param {String}
+@param {function}
+Destroy notes which live under given path.
+###
 
-# Destroy notes which live under given path.
 Note.destroyForPath = (path, callback) ->
     regExp = helpers.getPathRegExp path
     Note.destroySome { where: { path: { regex: regExp } } }, callback
 
-# Change path for every note which are children of given path to the 
-# new given one.
-# It is the result of moving notes inside tree.
+###*
+@param {String}
+@param {String}
+@param {String}
+@param {function}
+Change path for every note which are children of given path to the 
+new given one.
+It is the result of moving notes inside tree.
+###
 Note.updatePath = (path, newPath, newName, callback) ->
     Note.allForPath path, (err, notes) ->
         return callback(err) if err
@@ -59,8 +86,15 @@ Note.updatePath = (path, newPath, newName, callback) ->
             note.humanPath = humanNames
             note.save done
 
-# When a node is moved, all notes that are linked to this node are
-# updated : sub-path are replaced by new node path.
+###*
+@param {String}
+@param {String}
+@param {String}
+@param {function}
+When a node is moved, all notes that are linked to this node are
+updated : sub-path are replaced by new node path.
+###
+
 Note.movePath = (path, dest, humanDest, callback) ->
     Note.allForPath path, (err, notes) ->
         return callback(err) if err
