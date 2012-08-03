@@ -1,5 +1,11 @@
 fs = require 'fs'
 
+# config #
+
+directoryToDocument = "app"
+jsDirectory = "jsFiles"
+docDirectory = "doc" 
+
 # Grab test files 
 walk = (dir, fileList) ->
   list = fs.readdirSync(dir)
@@ -17,7 +23,7 @@ walk = (dir, fileList) ->
 {exec} = require 'child_process'
 testFiles = walk("test", [])
 uiTestFiles = walk("client/test", [])
-phantomTestFiles = walk("phantom/test", [])
+appFiles = walk(directoryToDocument,[])
 
 task 'tests', 'run tests through mocha', ->
     runTests testFiles
@@ -25,8 +31,8 @@ task 'tests', 'run tests through mocha', ->
 task 'tests:client', 'run tests through mocha', ->
     runTests uiTestFiles
 
-task 'tests:phantom', 'run tests through mocha', ->
-    runTests phantomTestFiles
+task 'docs', "create the whole documentation with jsduck", ->
+    makeDoc appFiles 
 
 runTests = (fileList) ->
   console.log "Run tests with Mocha for " + fileList.join(" ")
@@ -62,4 +68,19 @@ task "xunit:client", "", ->
   command += " --require should --compilers coffee:coffee-script -R xunit > xunitclient.xml"
   exec command, (err, stdout, stderr) ->
     console.log stdout
+
+makeDoc = (fileList) ->
+  console.log "Create documentation with jsduck for " + fileList.join(" ")
+  command = "coffee -o " + jsDirectory + " --compile " + fileList.join(" ")
+  exec command, (err, stdout, stderr) ->
+    if err
+      console.log "Error compiling coffee files : \n" + err
+    console.log stdout
+    if not err
+      command = "jsduck " + jsDirectory + "/* -o " + docDirectory
+      exec command, (err, stdout, stderr) ->
+        if err
+          console.log "Error generating documentation : \n" + err
+        console.log stdout
+
 
